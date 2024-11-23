@@ -9,7 +9,7 @@ export const load = (async () => {
 
 
 export const actions: Actions = {
-    default: async ({ request, locals, cookies }) => {
+    default: async ({ locals, cookies }) => {
 
         if(locals.isLoggedIn) {
             throw redirect(303, "/dashboard")
@@ -18,15 +18,7 @@ export const actions: Actions = {
         const signinRequest = await openIdClient.createSigninRequest({
             state: generateState()
         });
-    
-        cookies.set("__auth", JSON.stringify({ state: signinRequest.state }), {
-            path: "/",
-            expires: new Date(Date.now() + 20 * 60 * 1000), //20min
-            httpOnly: true,
-            sameSite: "lax",
-            secure: false
-        });
         
-        throw redirect(301, signinRequest.url);
+        throw redirect(303, signinRequest.url);
     }
 }
